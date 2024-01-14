@@ -25,7 +25,7 @@ func BookRoutes() chi.Router {
 	bookHandler := BookHandler{}
 	r.Get("/", bookHandler.ListBooks)
 	r.Get("/{id}", bookHandler.GetBook)
-	r.Post("/", bookHandler.StoreBook)
+	r.Post("/", bookHandler.CreateBook)
 	r.Put("/{id}", bookHandler.UpdateBook)
 	r.Delete("/{id}", bookHandler.DeleteBook)
 

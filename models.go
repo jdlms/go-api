@@ -22,7 +22,7 @@ func listBooks() []*Book {
 	return books
 }
 
-func GetBook(id string) *Book {
+func getBook(id string) *Book {
 	for _, book := range books {
 		if book.ID == id {
 			return book
@@ -31,16 +31,26 @@ func GetBook(id string) *Book {
 	return nil
 }
 
-func StoreBook(book Book) {
+func storeBook(book Book) {
 	books = append(books, &book)
 }
 
-func DeleteBook(id string) string {
+func updateBook(id string, bookUpdate Book) *Book {
+	for i, book := range books {
+		if book.ID == id {
+			books[i] = &bookUpdate
+			return book
+		}
+	}
+	return nil
+}
+
+func deleteBook(id string) *Book {
 	for i, book := range books {
 		if book.ID == id {
 			books = append(books[:i], (books)[i+1:]...)
-			return id
+			return &Book{}
 		}
 	}
-	return ""
+	return nil
 }
