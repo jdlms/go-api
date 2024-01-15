@@ -1,5 +1,15 @@
 package main
 
+type BookStorage interface {
+	List() []*Book
+	Get(string) *Book
+	Update(string, Book) *Book
+	Create(Book)
+	Delete(string) *Book
+}
+
+type BookStore struct{}
+
 type Book struct {
 	ID               string `json:"id"`
 	Title            string `json:"title"`
@@ -18,11 +28,11 @@ var books = []*Book{
 	},
 }
 
-func listBooks() []*Book {
+func (b BookStore) List() []*Book {
 	return books
 }
 
-func getBook(id string) *Book {
+func (b BookStore) Get(id string) *Book {
 	for _, book := range books {
 		if book.ID == id {
 			return book
@@ -31,11 +41,11 @@ func getBook(id string) *Book {
 	return nil
 }
 
-func storeBook(book Book) {
+func (b BookStore) Create(book Book) {
 	books = append(books, &book)
 }
 
-func updateBook(id string, bookUpdate Book) *Book {
+func (b BookStore) Update(id string, bookUpdate Book) *Book {
 	for i, book := range books {
 		if book.ID == id {
 			books[i] = &bookUpdate
@@ -45,7 +55,7 @@ func updateBook(id string, bookUpdate Book) *Book {
 	return nil
 }
 
-func deleteBook(id string) *Book {
+func (b BookStore) Delete(id string) *Book {
 	for i, book := range books {
 		if book.ID == id {
 			books = append(books[:i], (books)[i+1:]...)

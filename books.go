@@ -1,4 +1,3 @@
-// Handlers for the router yet to be implemented
 package main
 
 import (
@@ -9,10 +8,16 @@ import (
 )
 
 type BookHandler struct {
+	storage BookStorage
 }
 
+// or, in main.go you could write:
+// store := BookStore{}
+// handler := BookHandler(storeage: store)
+// allowing you to call, for example, `handler.list()`
+
 func (b BookHandler) ListBooks(w http.ResponseWriter, r *http.Request) {
-	err := json.NewEncoder(w).Encode(listBooks())
+	err := json.NewEncoder(w).Encode(b.storage.List())
 	if err != nil {
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
@@ -21,7 +26,7 @@ func (b BookHandler) ListBooks(w http.ResponseWriter, r *http.Request) {
 
 func (b BookHandler) GetBook(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
-	book := getBook(id)
+	book := b.storage.Get(id)
 	if book == nil {
 		http.Error(w, "Book not found", http.StatusNotFound)
 	}
@@ -39,7 +44,7 @@ func (b BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	storeBook(book)
+	b.storage.Create(book)
 	err = json.NewEncoder(w).Encode(book)
 	if err != nil {
 		http.Error(w, "Internal error", http.StatusInternalServerError)
@@ -55,7 +60,7 @@ func (b BookHandler) UpdateBook(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	updatedBook := updateBook(id, book)
+	updatedBook := b.storage.Update(id, book)
 	if updatedBook == nil {
 		http.Error(w, "Book not found", http.StatusNotFound)
 		return
@@ -66,9 +71,10 @@ func (b BookHandler) UpdateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
 func (b BookHandler) DeleteBook(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
-	book := deleteBook(id)
+	book := b.storage.Delete(id)
 	if book == nil {
 		http.Error(w, "Book not found", http.StatusNotFound)
 		return
