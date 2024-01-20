@@ -1,4 +1,4 @@
-module github.com/jdlms/go-api
+module go-api
 
 go 1.20
 

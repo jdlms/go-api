@@ -1,28 +1,37 @@
-package main
+package api
 
 import (
 	"net/http"
 
+	"go-api/pkg/handlers"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-pg/pg"
 )
 
-func main() {
+func StartAPI(pgdb *pg.DB) *chi.Mux {
+
 	r := chi.NewRouter()
-	r.Use(middleware.Logger)
+
+	r.Use(middleware.Logger, middleware.WithValue("DB", pgdb))
+
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write(([]byte("Hello from the root.")))
+		w.Write(([]byte("We're up and running!")))
 	})
 
 	r.Mount("/books", BookRoutes())
 
-	http.ListenAndServe(":3000", r)
+	// http.ListenAndServe(":8080", r)
+
+	return r
+
 }
 
 func BookRoutes() chi.Router {
 	r := chi.NewRouter()
 
-	bookHandler := BookHandler{}
+	bookHandler := handlers.BookHandler{}
 	r.Get("/", bookHandler.ListBooks)
 	r.Get("/{id}", bookHandler.GetBook)
 	r.Post("/", bookHandler.CreateBook)

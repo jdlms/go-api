@@ -1,14 +1,16 @@
-package main
+package handlers
 
 import (
 	"encoding/json"
 	"net/http"
 
+	"go-api/pkg/models"
+
 	"github.com/go-chi/chi/v5"
 )
 
 type BookHandler struct {
-	storage BookStorage
+	storage models.BookStorage
 }
 
 // or, in main.go you could write:
@@ -38,7 +40,7 @@ func (b BookHandler) GetBook(w http.ResponseWriter, r *http.Request) {
 }
 
 func (b BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
-	var book Book
+	var book models.Book
 	err := json.NewDecoder(r.Body).Decode(&book)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -54,7 +56,7 @@ func (b BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 
 func (b BookHandler) UpdateBook(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
-	var book Book
+	var book models.Book
 	err := json.NewDecoder(r.Body).Decode(&book)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
