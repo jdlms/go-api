@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -30,21 +31,29 @@ func StartDB() (*pg.DB, error) {
 
 	//connect db
 	db := pg.Connect(opts)
+	if db == nil {
+		log.Println("Failed to connect to database")
+		return nil, fmt.Errorf("failed to connect to database")
+	}
+
 	//run migrations
 	collection := migrations.NewCollection()
 	err = collection.DiscoverSQLMigrations("migrations")
 	if err != nil {
+		log.Printf("Error discovering migrations: %v\n", err)
 		return nil, err
 	}
 
 	//start the migrations
 	_, _, err = collection.Run(db, "init")
 	if err != nil {
+		log.Printf("Error during migration init: %v\n", err)
 		return nil, err
 	}
 
 	oldVersion, newVersion, err := collection.Run(db, "up")
 	if err != nil {
+		log.Printf("Error running migrations: %v\n", err)
 		return nil, err
 	}
 	if newVersion != oldVersion {

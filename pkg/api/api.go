@@ -14,13 +14,14 @@ func StartAPI(pgdb *pg.DB) *chi.Mux {
 
 	r := chi.NewRouter()
 
-	r.Use(middleware.Logger, middleware.WithValue("DB", pgdb))
+	r.Use(middleware.Logger)
+	// what is middleware with value?
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write(([]byte("We're up and running!")))
 	})
-
-	r.Mount("/books", BookRoutes())
+	// passing the db connection explicitly to each handler
+	r.Mount("/books", BookRoutes(pgdb))
 
 	// http.ListenAndServe(":8080", r)
 
@@ -28,15 +29,15 @@ func StartAPI(pgdb *pg.DB) *chi.Mux {
 
 }
 
-func BookRoutes() chi.Router {
+func BookRoutes(pgdb *pg.DB) chi.Router {
 	r := chi.NewRouter()
 
-	bookHandler := handlers.BookHandler{}
+	bookHandler := handlers.BookHandler{DB: pgdb}
 	r.Get("/", bookHandler.ListBooks)
-	r.Get("/{id}", bookHandler.GetBook)
-	r.Post("/", bookHandler.CreateBook)
-	r.Put("/{id}", bookHandler.UpdateBook)
-	r.Delete("/{id}", bookHandler.DeleteBook)
+	// r.Get("/{id}", bookHandler.GetBook)
+	// r.Post("/", bookHandler.CreateBook)
+	// r.Put("/{id}", bookHandler.UpdateBook)
+	// r.Delete("/{id}", bookHandler.DeleteBook)
 
 	return r
 }
