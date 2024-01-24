@@ -21,3 +21,10 @@
 ├── go.mod\
 ├── go.sum\
 └── README.md\
+
+todo:
+
+- response headers
+- auth
+- cors headers
+- global error handling

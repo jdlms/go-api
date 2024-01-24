@@ -34,8 +34,8 @@ func BookRoutes(pgdb *pg.DB) chi.Router {
 
 	bookHandler := handlers.BookHandler{DB: pgdb}
 	r.Get("/", bookHandler.ListBooks)
-	// r.Get("/{id}", bookHandler.GetBook)
-	// r.Post("/", bookHandler.CreateBook)
+	r.Get("/{id}", bookHandler.GetBook)
+	r.Post("/", bookHandler.CreateBook)
 	// r.Put("/{id}", bookHandler.UpdateBook)
 	// r.Delete("/{id}", bookHandler.DeleteBook)
 

@@ -22,14 +22,14 @@ func NewPostgresBookStore(db *pg.DB) *PostgresBookStore {
 	return &PostgresBookStore{db: db}
 }
 
-func List(db *pg.DB) ([]*models.Book, error) {
+func ListBooks(db *pg.DB) ([]*models.Book, error) {
 	var books []*models.Book
 
 	err := db.Model(&books).Select()
 	return books, err
 }
 
-func Get(db *pg.DB, id string) (*models.Book, error) {
+func GetBook(db *pg.DB, id string) (*models.Book, error) {
 	book := &models.Book{}
 
 	err := db.Model(book).Where("id = ?", id).Select()
@@ -38,4 +38,12 @@ func Get(db *pg.DB, id string) (*models.Book, error) {
 	}
 
 	return book, nil
+}
+
+func CreateBook(db *pg.DB, book models.Book) error {
+	_, err := db.Model(book).Insert()
+	if err != nil {
+		return err
+	}
+	return nil
 }
