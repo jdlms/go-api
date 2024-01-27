@@ -5,6 +5,7 @@ import (
 	"go-api/pkg/db"
 	"go-api/pkg/models"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-pg/pg"
@@ -30,7 +31,14 @@ func (b BookHandler) ListBooks(w http.ResponseWriter, r *http.Request) {
 }
 
 func (b BookHandler) GetBook(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
+	idStr := chi.URLParam(r, "id")
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+
 	book, err := db.GetBook(b.DB, id)
 	if err != nil {
 		http.Error(w, "Book not found", http.StatusNotFound)
@@ -61,32 +69,41 @@ func (b BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newBook)
 }
 
-// func (b BookHandler) UpdateBook(w http.ResponseWriter, r *http.Request) {
-// 	id := chi.URLParam(r, "id")
-// 	var book models.Book
-// 	err := json.NewDecoder(r.Body).Decode(&book)
-// 	if err != nil {
-// 		http.Error(w, err.Error(), http.StatusBadRequest)
-// 		return
-// 	}
-// 	updatedBook := b.storage.Update(id, book)
-// 	if updatedBook == nil {
-// 		http.Error(w, "Book not found", http.StatusNotFound)
-// 		return
-// 	}
-// 	err = json.NewEncoder(w).Encode(updatedBook)
-// 	if err != nil {
-// 		http.Error(w, "Internal error", http.StatusInternalServerError)
-// 		return
-// 	}
-// }
+func (b BookHandler) UpdateBook(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
 
-// func (b BookHandler) DeleteBook(w http.ResponseWriter, r *http.Request) {
-// 	id := chi.URLParam(r, "id")
-// 	book := b.storage.Delete(id)
-// 	if book == nil {
-// 		http.Error(w, "Book not found", http.StatusNotFound)
-// 		return
-// 	}
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
 
-// }
+	update := &models.Book{}
+	err = json.NewDecoder(r.Body).Decode(&update)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = db.UpdateBook(b.DB, id, *update)
+	if err != nil {
+		http.Error(w, "Internal error", http.StatusInternalServerError)
+		return
+	}
+}
+
+func (b BookHandler) DeleteBook(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	err = db.DeleteBook(b.DB, id)
+	if err != nil {
+		http.Error(w, "Internal error", http.StatusInternalServerError)
+		return
+	}
+}

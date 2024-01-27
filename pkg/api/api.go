@@ -15,7 +15,6 @@ func StartAPI(pgdb *pg.DB) *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Logger)
-	// what is middleware with value?
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write(([]byte("We're up and running!")))
@@ -37,7 +36,7 @@ func BookRoutes(pgdb *pg.DB) chi.Router {
 	r.Get("/{id}", bookHandler.GetBook)
 	r.Post("/", bookHandler.CreateBook)
 	// r.Put("/{id}", bookHandler.UpdateBook)
-	// r.Delete("/{id}", bookHandler.DeleteBook)
+	r.Delete("/{id}", bookHandler.DeleteBook)
 
 	return r
 }
