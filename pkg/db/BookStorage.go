@@ -1,7 +1,9 @@
 package db
 
 import (
+	"fmt"
 	"go-api/pkg/models"
+	"log"
 
 	"github.com/go-pg/pg"
 )
@@ -16,6 +18,12 @@ func NewPostgresBookStore(db *pg.DB) *PostgresBookStore {
 
 func ListBooks(db *pg.DB) ([]*models.Book, error) {
 	var books []*models.Book
+
+	if db == nil {
+		// Log the error and return
+		log.Println("Failed to connect to the database")
+		return nil, fmt.Errorf("failed to connect to the database")
+	}
 
 	err := db.Model(&books).Select()
 	return books, err
