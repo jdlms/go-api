@@ -1,12 +1,12 @@
 package models
 
-type BookStorage interface {
-	ListBooks() []*Book
-	GetBooks(string) *Book
-	UpdateBooks(string, Book) *Book
-	CreateBooks(Book)
-	DeleteBooks(string) *Book
-}
+// type BookStorage interface {
+// 	ListBooks() []*Book
+// 	GetBooks(string) *Book
+// 	UpdateBooks(string, Book) *Book
+// 	CreateBooks(Book)
+// 	DeleteBooks(string) *Book
+// }
 
 type BookStore struct{}
 
@@ -23,7 +23,7 @@ var books = []*Book{
 		ID:               1,
 		Title:            "7 habits of Highly Effective People",
 		Author:           "Stephen Covey",
-		PublishedDate:    "15/08/1989",
+		PublishedDate:    "1999-01-01",
 		OriginalLanguage: "English",
 	},
 }

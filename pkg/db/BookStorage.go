@@ -40,11 +40,13 @@ func GetBook(db *pg.DB, id int) (*models.Book, error) {
 	return book, nil
 }
 
-func CreateBook(db *pg.DB, book models.Book) error {
-	_, err := db.Model(book).Insert()
+func CreateBook(db *pg.DB, book *models.Book) error {
+	newBook, err := db.Model(book).Insert()
 	if err != nil {
-		return err
+		log.Printf("Error inserting book into database: %v", err)
+		return (err)
 	}
+	fmt.Print(newBook)
 	return nil
 }
 

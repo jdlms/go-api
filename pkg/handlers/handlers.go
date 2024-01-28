@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"go-api/pkg/db"
 	"go-api/pkg/models"
 	"net/http"
@@ -51,7 +52,7 @@ func (b BookHandler) GetBook(w http.ResponseWriter, r *http.Request) {
 }
 
 func (b BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
-	var newBook models.Book
+	var newBook *models.Book
 
 	err := json.NewDecoder(r.Body).Decode(&newBook)
 	if err != nil {
@@ -59,9 +60,11 @@ func (b BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Print(newBook)
+
 	err = db.CreateBook(b.DB, newBook)
 	if err != nil {
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		http.Error(w, "Internal error while creating book", http.StatusInternalServerError)
 		return
 	}
 
