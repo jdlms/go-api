@@ -1,10 +1,9 @@
-package handlers
+package books
 
 import (
 	"encoding/json"
 	"fmt"
-	"go-api/pkg/db"
-	"go-api/pkg/models"
+	"go-api/internal/models"
 	"net/http"
 	"strconv"
 
@@ -12,13 +11,13 @@ import (
 	"github.com/go-pg/pg"
 )
 
-type BookHandler struct {
+type BooksHandler struct {
 	DB *pg.DB
 }
 
-func (b BookHandler) ListBooks(w http.ResponseWriter, r *http.Request) {
+func (b BooksHandler) ListBooks(w http.ResponseWriter, r *http.Request) {
 
-	books, err := db.ListBooks(b.DB)
+	books, err := ListBooks(b.DB)
 	if err != nil {
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
@@ -31,7 +30,7 @@ func (b BookHandler) ListBooks(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (b BookHandler) GetBook(w http.ResponseWriter, r *http.Request) {
+func (b BooksHandler) GetBook(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -40,7 +39,7 @@ func (b BookHandler) GetBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	book, err := db.GetBook(b.DB, id)
+	book, err := GetBook(b.DB, id)
 	if err != nil {
 		http.Error(w, "Book not found", http.StatusNotFound)
 	}
@@ -51,7 +50,7 @@ func (b BookHandler) GetBook(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (b BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
+func (b BooksHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 	var newBook *models.Book
 
 	err := json.NewDecoder(r.Body).Decode(&newBook)
@@ -62,7 +61,7 @@ func (b BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Print(newBook)
 
-	err = db.CreateBook(b.DB, newBook)
+	err = CreateBook(b.DB, newBook)
 	if err != nil {
 		http.Error(w, "Internal error while creating book", http.StatusInternalServerError)
 		return
@@ -72,7 +71,7 @@ func (b BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newBook)
 }
 
-func (b BookHandler) UpdateBook(w http.ResponseWriter, r *http.Request) {
+func (b BooksHandler) UpdateBook(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -88,14 +87,14 @@ func (b BookHandler) UpdateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = db.UpdateBook(b.DB, id, *update)
+	err = UpdateBook(b.DB, id, *update)
 	if err != nil {
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
 	}
 }
 
-func (b BookHandler) DeleteBook(w http.ResponseWriter, r *http.Request) {
+func (b BooksHandler) DeleteBook(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -104,7 +103,7 @@ func (b BookHandler) DeleteBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = db.DeleteBook(b.DB, id)
+	err = DeleteBook(b.DB, id)
 	if err != nil {
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return

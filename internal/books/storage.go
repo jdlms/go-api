@@ -1,9 +1,10 @@
-package db
+package books
 
 import (
 	"fmt"
-	"go-api/pkg/models"
 	"log"
+
+	"go-api/internal/models"
 
 	"github.com/go-pg/pg"
 )

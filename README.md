@@ -1,4 +1,4 @@
-# Basic Go api to learn file structure conventions
+# Basic Go API
 
 \
 ├── cmd\

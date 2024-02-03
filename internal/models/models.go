@@ -1,13 +1,5 @@
 package models
 
-// type BookStorage interface {
-// 	ListBooks() []*Book
-// 	GetBooks(string) *Book
-// 	UpdateBooks(string, Book) *Book
-// 	CreateBooks(Book)
-// 	DeleteBooks(string) *Book
-// }
-
 type BookStore struct{}
 
 type Book struct {
