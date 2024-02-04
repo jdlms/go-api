@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 
@@ -12,16 +11,16 @@ import (
 func Routes() chi.Router {
 	r := chi.NewRouter()
 
-	r.Get("/authenticate", getAuthCallbackFunc)
+	r.Get("/auth/github/callback", getAuthCallbackFunc)
 
 	return r
 }
 
 func getAuthCallbackFunc(w http.ResponseWriter, r *http.Request) {
 
-	provider := chi.URLParam(r, "provider")
+	// provider := chi.URLParam(r, "provider")
 
-	r = r.WithContext(context.WithValue(context.Background(), "provider", provider))
+	// r = r.WithContext(context.WithValue(context.Background(), "provider", provider))
 
 	user, err := gothic.CompleteUserAuth(w, r)
 	if err != nil {

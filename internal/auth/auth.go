@@ -2,6 +2,7 @@ package auth
 
 import (
 	"log"
+	"os"
 
 	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
@@ -22,8 +23,9 @@ func NewAuth() {
 		log.Fatal("Error loading .env file")
 	}
 
-	GITHUB_KEY := xx
-	GITHUB_SECRET := yy
+	githubClientId := os.Getenv("GITHUB_CLIENT_ID")
+	githubClientSecret := os.Getenv("GITHUB_CLIENT_SECRET")
+
 	store := sessions.NewCookieStore([]byte(key))
 	store.MaxAge(MaxAge)
 
@@ -34,7 +36,7 @@ func NewAuth() {
 	gothic.Store = store
 
 	goth.UseProviders(
-		github.New(GITHUB_KEY, GITHUB_SECRET, "http://localhost:3000/auth/github/callback"),
+		github.New(githubClientId, githubClientSecret, "http://localhost:5173/auth/github/callback"),
 	)
 
 }
