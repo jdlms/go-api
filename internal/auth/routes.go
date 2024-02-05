@@ -11,7 +11,7 @@ import (
 func Routes() chi.Router {
 	r := chi.NewRouter()
 
-	r.Get("/auth/github/callback", getAuthCallbackFunc)
+	r.Get("/github/callback", getAuthCallbackFunc)
 
 	return r
 }

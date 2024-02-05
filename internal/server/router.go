@@ -22,7 +22,7 @@ func ConfigureRoutes(pgdb *pg.DB) *chi.Mux {
 		w.Write(([]byte("We're up and running!")))
 	})
 	// passing the db connection explicitly to each handler
-	r.Mount("/", auth.Routes())
+	r.Mount("/auth", auth.Routes())
 	r.Mount("/books", books.Routes(pgdb))
 
 	return r
