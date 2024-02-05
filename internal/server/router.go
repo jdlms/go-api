@@ -1,13 +1,14 @@
 package server
 
 import (
-	"go-api/internal/auth"
+	"fmt"
 	"go-api/internal/books"
 	"net/http"
 
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-pg/pg"
+	"github.com/markbates/goth/gothic"
 )
 
 func ConfigureRoutes(pgdb *pg.DB) *chi.Mux {
@@ -22,9 +23,25 @@ func ConfigureRoutes(pgdb *pg.DB) *chi.Mux {
 		w.Write(([]byte("We're up and running!")))
 	})
 	// passing the db connection explicitly to each handler
-	r.Mount("/auth", auth.Routes())
+
+	r.Get("/auth/{provider}", getAuthCallbackFunc)
+
 	r.Mount("/books", books.Routes(pgdb))
 
 	return r
 
+}
+
+func getAuthCallbackFunc(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("You hit the auth callback!")
+	// provider := chi.URLParam(r, "provider")
+	// r = r.WithContext(context.WithValue(context.Background(), "provider", provider))
+
+	user, err := gothic.CompleteUserAuth(w, r)
+	if err != nil {
+		fmt.Fprintln(w, err)
+		return
+	}
+
+	fmt.Println(user)
 }
