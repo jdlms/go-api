@@ -19,7 +19,6 @@ func Routes() chi.Router {
 func getAuthCallbackFunc(w http.ResponseWriter, r *http.Request) {
 
 	// provider := chi.URLParam(r, "provider")
-
 	// r = r.WithContext(context.WithValue(context.Background(), "provider", provider))
 
 	user, err := gothic.CompleteUserAuth(w, r)
