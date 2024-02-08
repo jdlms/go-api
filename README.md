@@ -1,6 +1,6 @@
 # Basic Go API
 
-
+`docker compose up --build`
 
 #### to-do
 
