@@ -18,7 +18,6 @@ func Startup() {
 	}
 
 	router := ConfigureRoutes(pgdb)
-
 	port := os.Getenv("PORT")
 
 	err = http.ListenAndServe((fmt.Sprintf(":%s", port)), router)
