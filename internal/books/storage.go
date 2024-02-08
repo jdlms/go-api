@@ -17,6 +17,8 @@ func NewPostgresBookStore(db *pg.DB) *PostgresBookStore {
 	return &PostgresBookStore{db: db}
 }
 
+// functions for in-memory store
+
 func ListBooks(db *pg.DB) ([]*models.Book, error) {
 	var books []*models.Book
 

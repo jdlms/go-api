@@ -4,8 +4,7 @@
 
 #### to-do
 
+- tests
 - response headers
-- auth
 - cors headers
 - global error handling
-- tests
